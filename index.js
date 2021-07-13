@@ -1,6 +1,8 @@
 const { createBullBoard } = require('@bull-board/api');
+const { BullAdapter } = require('@bull-board/api/bullAdapter')
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { ExpressAdapter } = require('@bull-board/express');
+const Queue = require('bull');
 const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
 const express = require('express');
 
@@ -13,7 +15,8 @@ const redisOptions = {
   tls: false,
 };
 
-// const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
+const createQueue = (name) => new Queue(name, { redis: redisOptions })
+const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
 
 async function setupBullMQProcessor(queueName) {
   const queueScheduler = new QueueScheduler(queueName, {
@@ -35,6 +38,7 @@ async function setupBullMQProcessor(queueName) {
 }
 
 const run = async () => {
+  const exampleBull = createQueue('Bull');
   // const exampleBullMq = createQueueMQ('BullMQ');
 
   // await setupBullMQProcessor(exampleBullMq.name);
@@ -46,7 +50,7 @@ const run = async () => {
 
   createBullBoard({
     // queues: [new BullMQAdapter(exampleBullMq)],
-    queues: [],
+    queues: [new BullAdapter(exampleBull)],
     serverAdapter,
   });
 

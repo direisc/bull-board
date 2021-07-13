@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@bull-board/express": "^3.3.0",
+    "bull": "^3.23.0",
     "bullmq": "^1.39.0",
     "express": "^4.17.1"
   }
